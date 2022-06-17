@@ -1,12 +1,13 @@
-import React ,{useState} from "react";
+import React, {useState} from "react";
 import './payroll-form.css';
 import ProfilePic1 from '../../assets/icons/profile-images/Ellipse -1.png';
 import ProfilePic2 from '../../assets/icons/profile-images/Ellipse -2.png';
 import ProfilePic3 from '../../assets/icons/profile-images/Ellipse -3.png';
 import ProfilePic4 from '../../assets/icons/profile-images/Ellipse -4.png';
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
+import employeeService from "../../service/employee-service";
 
-function PayrollForm() {
+const PayrollForm = (props) => {
 
     let initialValue = {
         name: '',
@@ -20,18 +21,30 @@ function PayrollForm() {
         departmentValue: [],
         gender: '',
         salary: '',
-        day: '1',
-        month: 'Jan',
-        year: '2021',
+        day: '',
+        month: '',
+        year: '',
         notes: '',
         startDate: '',
-        id: '',
+        id: Date.now(),
         profileURL: '',
         isUpdate: false
     }
 
     const [formValue, setForm] = useState(initialValue);
-    
+
+      const onReset =  () => {
+        setForm({
+            name: "",
+            profilePic: "",
+            gender: "",
+            department: [],
+            salary: "",
+            startDate: "",
+            notes: ""
+        });
+      };
+
     const changeValue = (event) => {
         setForm({...formValue, [event.target.name]: event.target.value})
     }
@@ -52,9 +65,33 @@ function PayrollForm() {
         return formValue.departmentValue && formValue.departmentValue.includes(name);
     }
  
-    function save(event) {
+    const save =  (event) => {
+    
         event.preventDefault();
-        console.log(formValue);
+        let Object = {
+            name: formValue.name,
+            gender: formValue.gender,
+            department: formValue.departmentValue,
+            salary: formValue.salary,
+            startDate: `${formValue.day} ${formValue.month} ${formValue.year}`,
+            day: formValue.day,
+            month: formValue.month,
+            year: formValue.year,
+            note: formValue.notes,
+            id: formValue.id,
+            profilePic: formValue.profileURL,
+            isUpdate: formValue.isUpdate
+            
+        };
+console.log(Object);
+        employeeService.addEmployee(Object).then((response) => {
+            console.log(Object);
+            alert(`employee details added`,response);
+        })
+       
+        localStorage.setItem('employeelist',JSON.stringify(Object));
+        console.log(Object);
+        alert('employee  has been added')
     }
     
     return (
@@ -101,9 +138,9 @@ function PayrollForm() {
                 <div className="row-content">
                     <label className="label text" htmlFor="gender">Gender</label>
                     <div>
-                        <input type="radio" id="male" name="gender" value="male" onChange={changeValue} required/>
+                        <input type="radio" id="male" name="gender" value="Male" checked={formValue.gender==="Male"} onChange={changeValue} required/>
                         <label className="text" htmlFor="male">Male</label>
-                        <input type="radio" id="female" name="gender" value="female" onChange={changeValue} required/>
+                        <input type="radio" id="female" name="gender" value="Female" checked={formValue.gender==="Female"} onChange={changeValue} required/>
                         <label className="text" htmlFor="female">Female</label>
                     </div>
                 </div>
@@ -124,23 +161,23 @@ function PayrollForm() {
                 <div className="row-content">
                     <label className="label text" htmlFor="salary">Choose Your Salary: </label>
                     <input className="input" type="range" name="salary" id="salary" min="300000" max="500000" step="100" 
-                            value={formValue.salary} onChange={changeValue}/>
-                    <output className="salary-output text" htmlFor="salary">{formValue.salary}</output>
+                            value={formValue.salary==="" ? "300000" : formValue.salary} onChange={changeValue}/>
+                    <output className="salary-output text" htmlFor="salary">{formValue.salary==="" ? 300000 : formValue.salary}</output>
                 </div>
 
                 <div className="row-content">
                     <label className="label text" htmlFor="startDate">Start Date</label>
                     <div>
-                        <select id="day" name="Day" onChange={changeValue} value={formValue.day}>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                            <option value="6">6</option>
-                            <option value="7">7</option>
-                            <option value="8">8</option>
-                            <option value="9">9</option>
+                        <select id="day" name="day" onChange={changeValue} value={formValue.day}>
+                            <option value="1">01</option>
+                            <option value="2">02</option>
+                            <option value="3">03</option>
+                            <option value="4">04</option>
+                            <option value="5">05</option>
+                            <option value="6">06</option>
+                            <option value="7">07</option>
+                            <option value="8">08</option>
+                            <option value="9">09</option>
                             <option value="10">10</option>
                             <option value="11">11</option>
                             <option value="12">12</option>
@@ -165,18 +202,18 @@ function PayrollForm() {
                             <option value="31">31</option>
                         </select>
                         <select id="month" name="month" onChange={changeValue} value={formValue.month}>
-                            <option value="0">January</option>
-                            <option value="1">February</option>
-                            <option value="2">March</option>
-                            <option value="3">April</option>
-                            <option value="4">May</option>
-                            <option value="5">June</option>
-                            <option value="6">July</option>
-                            <option value="7">August</option>
-                            <option value="8">September</option>
-                            <option value="9">October</option>
-                            <option value="10">November</option>
-                            <option value="11">December</option>
+                            <option value="Jan">Jan</option>
+                            <option value="Feb">Feb</option>
+                            <option value="Mar">Mar</option>
+                            <option value="Apr">Apr</option>
+                            <option value="May">May</option>
+                            <option value="Jun">Jun</option>
+                            <option value="Jul">Jul</option>
+                            <option value="Aug">Aug</option>
+                            <option value="Sep">Sep</option>
+                            <option value="Oct">Oct</option>
+                            <option value="Nov">Nov</option>
+                            <option value="Dec">Dec</option>
                         </select>
                         <select id="year" name="year" onChange={changeValue} value={formValue.year}>
                             <option value="2021">2021</option>
@@ -191,15 +228,15 @@ function PayrollForm() {
 
                 <div className="row-content">
                     <label className="label text" htmlFor="notes">Notes</label>
-                    <textarea id="notes" className="input" name="Notes" placeholder=""
-                                onChange={changeValue}></textarea>
+                    <textarea id="notes" className="input" name="notes" value = {formValue.notes} 
+                               onChange={changeValue}></textarea>
                 </div>
 
                 <div className="buttonParent">
-                   <Link to="/payroll-dashboard" className="resetButton button cancelButton">Cancel</Link>
+                   <Link to="/" className="resetButton button cancelButton">Cancel</Link>
                    <div className="submit-reset">
-                       <button type="submit" className="button submitButton" id="submitButton">{formValue.isUpdate ? 'Update' : 'Submit'}</button>
-                       <button type="reset" className="resetButton button">Reset</button>
+                       <button type="submit" className="button submitButton" id="submitButton" onClick={save}>{formValue.isUpdate ? 'Update' : 'Submit'}</button>
+                       <button type="reset" className="resetButton button" onClick={onReset}>Reset</button>
                    </div>
                </div>
 

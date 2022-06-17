@@ -1,22 +1,22 @@
 import './App.css';
 import PayrollForm from './component/Payroll-form/payroll-form';
 import Header from "./component/Header/Header";
-import PayrollDashboard from './component/payroll-dashboard/payroll-dashboard';
+import  Home from './component/payroll-dashboard/payroll-dashboard';
 import React from 'react';
-import {BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route,Routes} from "react-router-dom";
 
 function App() {
   return (
     <>
-      <Header />
+     <Header />
+      <div className="App">
       <Router>
-        <div className="App">
               <Routes>
-                  <Route exact path="/payroll-dashboard" component={PayrollDashboard}/>
-                  <Route exact path="/payroll-form" component={PayrollForm}/>
+                  <Route exact path="/" element={<Home/>}/>
+                  <Route exact path="/payroll-form" element={<PayrollForm/>}/>
               </Routes>
+              </Router>
         </div>
-      </Router>
       </>
   );
 }
